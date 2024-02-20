@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->unique();
+            //create a foreign key to the users table
+            $table->foreignId("user_id")->constrained("users")->onDelete("cascade");
+
+
+
             $table->timestamps();
         });
     }
@@ -22,6 +28,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropForeign('user_id');
         Schema::dropIfExists('categories');
     }
 };
