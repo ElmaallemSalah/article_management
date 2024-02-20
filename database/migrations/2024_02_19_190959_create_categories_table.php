@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            //create a foreign key to the users table
+            $table->string("image");
             $table->foreignId("user_id")->constrained("users")->onDelete("cascade");
 
 
