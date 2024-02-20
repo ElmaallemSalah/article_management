@@ -109,7 +109,7 @@ watch([search, perPage ], debounce(function([searchVal, perPageVal]) {
                     All Articles
                 </h3>
                 <div class="ml-auto">
-                    <Link   v-if="$page.props.auth.user.permissions.includes('create article')" :href="route('article.create')" type="button"
+                    <Link   v-if="$page.props.auth.user.permissions.includes('create')" :href="route('article.create')" type="button"
                         class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                     Add New
                     </Link>
@@ -118,7 +118,7 @@ watch([search, perPage ], debounce(function([searchVal, perPageVal]) {
         </div>
 
 
-        <SearchInput v-model="search" placeholder="Search users name , email , website" />
+        <SearchInput v-model="search" placeholder="Search article name , description, users name and  category name , website" />
 
         <!-- date select -->
         <!-- date select -->
@@ -148,6 +148,12 @@ watch([search, perPage ], debounce(function([searchVal, perPageVal]) {
                     <th scope="col" class="px-6 py-3">
                         Description
                     </th>
+                    <th scope="col" class="px-6 py-3">
+                        Category
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        User_name
+                    </th>
                    
                     <th scope="col" class="px-6 py-3">
                         Image
@@ -174,9 +180,16 @@ watch([search, perPage ], debounce(function([searchVal, perPageVal]) {
                     <td class="px-6 py-4">
                         {{ article.description }}
                     </td>
+                    <td class="px-6 py-4">
+                        {{ article.category_name }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ article.user_name }}
+                    </td>
                   
                     <td class="px-6 py-4">
-                        <img class="w-8 h-8 rounded-full" :src="article.logo" alt="Article_image">
+                     
+                        <img class="w-8 h-8 rounded-full" :src="article.image" alt="Article_image">
 
                     </td>
                     <td class="px-6 py-4">

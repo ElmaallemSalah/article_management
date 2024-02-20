@@ -12,7 +12,11 @@ import { Head, useForm } from "@inertiajs/vue3"
 
 
 const props = defineProps({
-    company: {
+    article: {
+        type: Object,
+        default: () => ({}),
+    },
+    categories: {
         type: Object,
         default: () => ({}),
     },
@@ -20,18 +24,18 @@ const props = defineProps({
 
 const form = useForm({
     name: "",
-    email: "",
-    logo: "",
-    website: "",
+    description: "",
+    image: "",
+    category: "",
 });
 
 const submit = () => {
-    form.post(route("company.store"));
+    form.post(route("article.store"));
 };
 </script>
 
 <template>
-    <Head title="New Company" />
+    <Head title="New article" />
 
 
 
@@ -39,8 +43,8 @@ const submit = () => {
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
 
         <h3
-            class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-            New Company</h3>
+            class="p-5 text-lg font-semibold text-left text-gray-900 bg-white rtl:text-right dark:text-white dark:bg-gray-800">
+            New article</h3>
 
         <div>
 
@@ -50,40 +54,42 @@ const submit = () => {
                 <div class="mx-auto max-w-7xl">
                     <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div class="p-6 bg-white border-b border-gray-200">
-                            <form @submit.prevent="submit"  enctype="multipart/form-data">
+                            <form @submit.prevent="submit" enctype="multipart/form-data">
                                 <div class="mt-2">
                                     <InputLabel for="name" value="Name" />
 
-                                    <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required
+                                    <TextInput id="name" type="text" class="block w-full mt-1" v-model="form.name" required
                                         autofocus />
 
                                     <InputError class="mt-2" :message="form.errors.name" />
                                 </div>
                                 <div class="mt-2">
-                                    <InputLabel for="email" value="Email" />
+                                    <InputLabel for="description" value="Description" />
 
-                                    <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email"
+                                    <TextInput id="description" type="text" class="block w-full mt-1" v-model="form.description"
                                         required autofocus />
 
                                     <InputError class="mt-2" :message="form.errors.email" />
                                 </div>
                                 <div class="mt-2">
-                                    <InputLabel for="website" value="Website" />
+                                    <InputLabel for="category" value="Category" />
 
-                                    <TextInput id="website" type="text" class="mt-1 block w-full" v-model="form.website"
-                                        required autofocus />
+                                    <select id="articlesSelect" v-model="form.category"
+                                        class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option v-for="(cat, index) in categories" :key="index" :value="cat.id">{{ cat.name }}</option>
+                                    </select>
 
-                                    <InputError class="mt-2" :message="form.errors.website" />
+                                    <InputError class="mt-2" :message="form.errors.category" />
                                 </div>
                                 <div class="mt-2">
-                                    <InputLabel for="logo" value="Logo" />
+                                    <InputLabel for="image" value="image" />
 
-                                    <input type="file" @input="form.logo = $event.target.files[0]" />
+                                    <input type="file" @input="form.image = $event.target.files[0]" />
                                     <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                                         {{ form.progress.percentage }}%
                                     </progress>
 
-                                    <InputError class="mt-2" :message="form.errors.logo" />
+                                    <InputError class="mt-2" :message="form.errors.image" />
                                 </div>
 
                                 <PrimaryButton class="mt-2" type="submit" :class="{ 'opacity-25': form.processing }"

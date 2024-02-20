@@ -33,17 +33,19 @@ class ArticleController extends Controller
 
 
         $articles = Article::query()
-            ->select('id', 'name', 'description','image', 'created_at')
-            ->with('category')
-
-            ->when($request->input('search'), function ($query, $search) {
-                $query->where('name', 'like', '%' . $search . '%')
-                    
-                    ->orWhere('description', 'like', '%' . $search . '%');
-            })
-        
-            ->paginate($perPage)
-            ->withQueryString();
+        ->select('articles.id', 'articles.name', 'articles.description', 'articles.image', 'articles.created_at', 'categories.name as category_name','users.name as user_name')
+        ->leftJoin('categories', 'articles.category_id', '=', 'categories.id')
+        ->leftJoin('users', 'articles.user_id', '=', 'users.id')
+        ->when($request->input('search'), function ($query, $search) {
+            $query->where('articles.name', 'like', '%' . $search . '%')
+            ->orWhere('categories.name', 'like', '%' . $search . '%')
+          
+            ->orWhere('users.name', 'like', '%' . $search . '%')
+                ->orWhere('articles.description', 'like', '%' . $search . '%');
+        })
+        ->paginate($perPage)
+        ->withQueryString();
+    
 
         $search = $request->input('search');
         $perPage = $request->input('perPage');
@@ -56,7 +58,16 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        //
+      //select all categories and take just id and name 
+        $categories = \App\Models\Category::select('id', 'name')->get();
+
+
+
+        return inertia('Article/Create', compact('categories'));
+        
+
+
+
     }
 
     /**

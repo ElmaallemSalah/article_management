@@ -23,7 +23,7 @@ class ArticleFactory extends Factory
 
             'name' =>  fake()->unique()->name(),
 
-            'image' => 'images/categories/no_image.jpg' ,
+            'image' => '/images/articles/no_article.png' ,
             'description' => fake()->text(200),
            
             'user_id' => fake()->numberBetween(1, 100),
