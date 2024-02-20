@@ -26,7 +26,7 @@ const form = useForm({
     name: "",
     description: "",
     image: "",
-    category: "",
+    category: props.categories[0].id,
 });
 
 const submit = () => {
@@ -58,7 +58,7 @@ const submit = () => {
                                 <div class="mt-2">
                                     <InputLabel for="name" value="Name" />
 
-                                    <TextInput id="name" type="text" class="block w-full mt-1" v-model="form.name" required
+                                    <TextInput id="name" type="text" class="block w-full mt-1" v-model="form.name" 
                                         autofocus />
 
                                     <InputError class="mt-2" :message="form.errors.name" />
@@ -67,16 +67,16 @@ const submit = () => {
                                     <InputLabel for="description" value="Description" />
 
                                     <TextInput id="description" type="text" class="block w-full mt-1" v-model="form.description"
-                                        required autofocus />
+                                          />
 
-                                    <InputError class="mt-2" :message="form.errors.email" />
+                                    <InputError class="mt-2" :message="form.errors.description" />
                                 </div>
                                 <div class="mt-2">
                                     <InputLabel for="category" value="Category" />
 
                                     <select id="articlesSelect" v-model="form.category"
                                         class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                        <option v-for="(cat, index) in categories" :key="index" :value="cat.id">{{ cat.name }}</option>
+                                        <option v-for="(cat, index) in categories" :key="index"  :value="cat.id">{{ cat.name }}</option>
                                     </select>
 
                                     <InputError class="mt-2" :message="form.errors.category" />

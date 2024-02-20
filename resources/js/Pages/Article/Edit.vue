@@ -1,40 +1,38 @@
 
 
 <script setup>
-
-
-
-
-import TextInput from "@/Components/TextInput.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
-import { Head, useForm } from "@inertiajs/vue3"
-
+import InputLabel from "@/Components/InputLabel.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import TextInput from "@/Components/TextInput.vue";
+import {
+    Head,
+    useForm,
+} from "@inertiajs/vue3";
 
 const props = defineProps({
-    company: {
+    article: {
         type: Object,
         default: () => ({}),
     },
 });
 
 const form = useForm({
-    id: props.company.id,
-    name: props.company.name,
-    email: props.company.email,
+    id: props.article.id,
+    name: props.article.name,
+    description: props.article.description,
 
-    website: props.company.website,
-    logo: props.company.logo,
+    category: props.article.category,
+    image: props.article.image,
 });
 
 const submit = () => {
-    form.post(route("company.update", props.company.id));
+    form.post(route("article.update", props.article.id));
 };
 </script>
 
 <template>
-    <Head title="Edit Company" />
+    <Head title="Edit article" />
 
 
 
@@ -42,8 +40,8 @@ const submit = () => {
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
 
         <h3
-            class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-            Edit Company</h3>
+            class="p-5 text-lg font-semibold text-left text-gray-900 bg-white rtl:text-right dark:text-white dark:bg-gray-800">
+            Edit article</h3>
 
         <div>
 
@@ -54,31 +52,31 @@ const submit = () => {
                     <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div class="p-6 bg-white border-b border-gray-200">
                             <div class="mb-2">
-                                <img class="h-60 rounded-full" :src="'/images/' + form.logo" alt="user photo">
+                                <img class="rounded-full h-60" :src="form.image" alt="user photo">
                             </div>
 
                             <form @submit.prevent="submit">
                                 <div class="mt-2">
                                     <InputLabel for="name" value="Name" />
 
-                                    <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required
+                                    <TextInput id="name" type="text" class="block w-full mt-1" v-model="form.name" 
                                         autofocus />
 
                                     <InputError class="mt-2" :message="form.errors.name" />
                                 </div>
                                 <div class="mt-2">
-                                    <InputLabel for="email" value="Email" />
+                                    <InputLabel for="description" value="Description" />
 
-                                    <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email"
-                                        required autofocus />
+                                    <TextInput id="description" type="text" class="block w-full mt-1" v-model="form.description"
+                                          />
 
-                                    <InputError class="mt-2" :message="form.errors.email" />
+                                    <InputError class="mt-2" :message="form.errors.description" />
                                 </div>
                                 <div class="mt-2">
                                     <InputLabel for="website" value="Website" />
 
-                                    <TextInput id="website" type="text" class="mt-1 block w-full" v-model="form.website"
-                                        required autofocus />
+                                    <TextInput id="website" type="text" class="block w-full mt-1" v-model="form.website"
+                                          />
 
                                     <InputError class="mt-2" :message="form.errors.website" />
                                 </div>

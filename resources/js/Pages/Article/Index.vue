@@ -198,10 +198,10 @@ watch([search, perPage ], debounce(function([searchVal, perPageVal]) {
                     <td class="px-6 py-4 text-right">
                         <div class="flex">
 
-                            <EditBtn   v-if="$page.props.auth.user.permissions.includes('edit article')" :href="route('article.edit', article.id)"/>
+                            <EditBtn   v-if="$page.props.auth.user.permissions.includes('edit')" :href="route('article.edit', article.id)"/>
 
                             
-                            <DeleteBtn   v-if="$page.props.auth.user.permissions.includes('delete article')"  @click="destroy(article.id)"/>
+                            <DeleteBtn   v-if="$page.props.auth.user.permissions.includes('delete')"  @click="destroy(article.id)"/>
 
                             
                         </div>
