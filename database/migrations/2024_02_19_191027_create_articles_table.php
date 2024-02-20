@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-     
+            $table->string("image");
             $table->foreignId("user_id")->constrained("users")->onDelete("cascade");
             $table->foreignId("category_id")->constrained("categories")->onDelete("cascade");
            
-            $table->string("image");
+            
             //discription
             $table->text('description');
             

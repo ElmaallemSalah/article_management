@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 
@@ -11,9 +12,43 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+
+        $perPage = $request->input('perPage') === 'ALL' ? PHP_INT_MAX : ($request->input('perPage') ?? 20);
+        $date_min = $request->input('date_min');
+        $date_max = $request->input('date_max');
+        if ($date_min!==null && $date_min!=='' &&$date_min!=="Invalid date" ) {
+           
+            $date_min = \Carbon\Carbon::parse($date_min)->format('Y-m-d');
+        }
+        if ($date_max!==null &&$date_max!==''&&$date_max!=="Invalid date") {
+            $date_max = \Carbon\Carbon::parse($date_max)->format('Y-m-d');
+        }
+
+
+
+    
+
+
+        $articles = Article::query()
+            ->select('id', 'name', 'description','image', 'created_at')
+            ->with('category')
+
+            ->when($request->input('search'), function ($query, $search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            })
+        
+            ->paginate($perPage)
+            ->withQueryString();
+
+        $search = $request->input('search');
+        $perPage = $request->input('perPage');
+
+        return inertia('Article/Index', compact('articles', 'search', 'perPage'));
     }
 
     /**

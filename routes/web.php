@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\ArticleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +34,34 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
+
+
+Route::middleware('auth')->group(function () {
+
+ 
+
+    //___________________________articles routs _________________________________________________________________________________________
+    Route::get('/articles', [ArticleController::class, 'index'])
+        ->middleware('permission:read')
+        ->name('articles.index');
+    Route::get('/article/create', [ArticleController::class, 'create'])
+        ->middleware('permission:create')
+        ->name('article.create');
+    Route::post('/article/store', [ArticleController::class, 'store'])
+        ->middleware('permission:create')
+        ->name('article.store');
+    Route::get('/article/edit/{id}', [ArticleController::class, 'edit'])
+        ->middleware('permission:edit')
+        ->name('article.edit');
+    Route::post('/article/update', [ArticleController::class, 'update'])
+        ->middleware('permission:edit')
+        ->name('article.update');
+    Route::delete('/article/destroy/{id}', [ArticleController::class, 'destroy'])
+        ->middleware('permission:delete')
+        ->name('article.destroy');
+
+    
+});
+
+
+

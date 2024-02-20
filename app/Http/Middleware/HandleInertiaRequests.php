@@ -2,8 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -37,7 +38,20 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            //
+            'auth' =>Auth::user()? [
+                'user' => [
+                    'name' => $request->user()->name,
+                    'email' => $request->user()->email,
+                    
+                   
+                    'permissions' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : [],
+                    'roles' => $request->user()  ? $request->user()->roles->pluck('name') : [],
+                   ]
+            ]:null
+            , 
+            'flash' => [
+                'status'=> session('status')
+            ],
         ]);
     }
 }

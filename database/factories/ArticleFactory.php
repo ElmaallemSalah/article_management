@@ -17,7 +17,18 @@ class ArticleFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+
+            //field name unique faker name 
+            
+
+            'name' =>  fake()->unique()->name(),
+
+            'image' => 'images/categories/no_image.jpg' ,
+            'description' => fake()->text(200),
+           
+            'user_id' => fake()->numberBetween(1, 100),
+            'category_id' => fake()->numberBetween(1, 100),
+           
         ];
     }
 }
