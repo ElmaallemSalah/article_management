@@ -15,6 +15,10 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    categories: {
+        type: Object,
+        default: () => ({}),
+    },
 });
 
 const form = useForm({
@@ -22,7 +26,7 @@ const form = useForm({
     name: props.article.name,
     description: props.article.description,
 
-    category: props.article.category,
+    category: props.article.category_id,
     image: props.article.image,
 });
 
@@ -73,22 +77,24 @@ const submit = () => {
                                     <InputError class="mt-2" :message="form.errors.description" />
                                 </div>
                                 <div class="mt-2">
-                                    <InputLabel for="website" value="Website" />
+                                    <InputLabel for="category" value="Category" />
 
-                                    <TextInput id="website" type="text" class="block w-full mt-1" v-model="form.website"
-                                          />
+                                    <select id="articlesSelect" v-model="form.category"
+                                        class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option v-for="(cat, index) in categories" :key="index"  :value="cat.id">{{ cat.name }}</option>
+                                    </select>
 
-                                    <InputError class="mt-2" :message="form.errors.website" />
+                                    <InputError class="mt-2" :message="form.errors.category" />
                                 </div>
                                 <div class="mt-2">
-                                    <InputLabel for="logo" value="Logo" />
+                                    <InputLabel for="image" value="Image" />
 
-                                    <input type="file" @input="form.logo = $event.target.files[0]" />
+                                    <input type="file" @input="form.image = $event.target.files[0]" />
                                     <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                                         {{ form.progress.percentage }}%
                                     </progress>
 
-                                    <InputError class="mt-2" :message="form.errors.logo" />
+                                    <InputError class="mt-2" :message="form.errors.image" />
                                 </div>
 
                                 <PrimaryButton class="mt-2" type="submit" :class="{ 'opacity-25': form.processing }"

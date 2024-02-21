@@ -118,7 +118,7 @@ watch([search, perPage ], debounce(function([searchVal, perPageVal]) {
         </div>
 
 
-        <SearchInput v-model="search" placeholder="Search article name , description, users name and  category name , website" />
+        <SearchInput v-model="search" placeholder="Search article name , description, users name and  category name " />
 
         <!-- date select -->
         <!-- date select -->

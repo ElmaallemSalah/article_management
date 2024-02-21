@@ -23,7 +23,7 @@ class ArticleFactory extends Factory
 
             'name' =>  fake()->unique()->name(),
 
-            'image' => '/images/articles/no_article.png' ,
+            'image' => $this->faker->imageUrl(640, 480, 'animals', true),
             'description' => fake()->text(200),
            
             'user_id' => fake()->numberBetween(1, 100),

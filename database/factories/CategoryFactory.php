@@ -20,7 +20,7 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->name(),
 
-            'image' => '/images/categories/no_category.jpg' ,
+            'image' => $this->faker->imageUrl(640, 480, 'animals', true),
            
             'user_id' => fake()->numberBetween(1, 100),
            
