@@ -36,6 +36,7 @@ In summary, Inertia.js offers a secure, efficient, and developer-friendly approa
 - **Inertia.js:** A modern JavaScript framework for building server-driven single-page apps.
 - **Tailwind CSS:** A utility-first CSS framework for quickly building custom designs.
 - **MySQL:** A popular open-source relational database management system.
+- **Spatie:** A collection of libraries for PHP Laravel that helps with various common tasks in web development, including user management, permissions, and more.
 
 ## Installation
 
