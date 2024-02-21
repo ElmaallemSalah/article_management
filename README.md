@@ -1,4 +1,4 @@
-# Task Management System with Laravel, Vue.js, and Inertia.js
+# Articles Management System with Laravel, Vue.js, and Inertia.js
 
 This project is a article management system built using Laravel, Vue.js, and Inertia.js, TailwindCSS , flowbite UI . It provides a seamless and modern user experience for managing article efficiently.
 
