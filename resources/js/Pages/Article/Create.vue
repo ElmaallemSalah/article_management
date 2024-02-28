@@ -10,7 +10,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import { Head, useForm } from "@inertiajs/vue3"
 
-
+import AppLayout from "@/Layouts/AppLayout.vue";
 const props = defineProps({
     article: {
         type: Object,
@@ -35,17 +35,21 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="New article" />
-
+   
+   <AppLayout title="Dashboard">
+    
+    <template #header>
+          <h2 class="text-xl font-semibold leading-tight text-gray-800">
+              Edit article
+          </h2>
+      </template>
+  
 
 
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
 
-        <h3
-            class="p-5 text-lg font-semibold text-left text-gray-900 bg-white rtl:text-right dark:text-white dark:bg-gray-800">
-            New article</h3>
-
+     
         <div>
 
 
@@ -105,4 +109,5 @@ const submit = () => {
 
 
     </div>
+</AppLayout>
 </template>

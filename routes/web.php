@@ -33,15 +33,9 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-});
 
-
-Route::middleware('auth')->group(function () {
-
- 
-
-    //___________________________articles routs _________________________________________________________________________________________
-    Route::get('/articles', [ArticleController::class, 'index'])
+    
+      Route::get('/articles', [ArticleController::class, 'index'])
         ->middleware('permission:read')
         ->name('articles.index');
     Route::get('/article/create', [ArticleController::class, 'create'])
@@ -61,8 +55,23 @@ Route::middleware('auth')->group(function () {
         ->middleware('permission:delete')
         ->name('article.destroy');
 
-    
-});
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+});
 
 

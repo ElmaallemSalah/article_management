@@ -22,7 +22,15 @@ import {
     router,
     useForm,
 } from "@inertiajs/vue3";
+import { onMounted } from "vue";
 
+
+
+
+
+onMounted(() => {
+    console.log(props.articles);
+});
 router.on('success', (event) => {
    
 })
@@ -181,10 +189,10 @@ watch([search, perPage ], debounce(function([searchVal, perPageVal]) {
                         {{ article.description }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ article.category_name }}
+                        {{ article.category.name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ article.user_name }}
+                        {{ article.user.name }}
                     </td>
                   
                     <td class="px-6 py-4">

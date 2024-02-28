@@ -19,7 +19,7 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): \Inertia\Response
     {
         $perPage = $request->input('perPage') === 'ALL' ? PHP_INT_MAX : ($request->input('perPage') ?? 20);
         $search = $request->input('search');
@@ -74,7 +74,7 @@ class ArticleController extends Controller
     }
     public function update(UpdateArticleRequest $request, Article $article): RedirectResponse
     {
-        $request->merge(['article' => $article]);
+        
         $validatedData = $request->validated();
 
         $logoName = $this->uploadImageOnUpdate($request, $article);
@@ -128,7 +128,7 @@ class ArticleController extends Controller
      */
     private function uploadImageOnCreate(Request $request): string
     {
-        $logoName = '/images/articles/no_article.png';
+        $logoName = 'no_article.png';
         if ($request->hasFile('image')) {
             $logoName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images/articles'), $logoName);
@@ -156,7 +156,8 @@ class ArticleController extends Controller
     private function deleteOldImage(Article $article): void
     {
         if ($article->image) {
-            $oldImagePath = public_path('images/articles/' . $article->image);
+            $oldImagePath = public_path( $article->image);
+            dd($oldImagePath);
 
             if (File::exists($oldImagePath)) {
                 File::delete($oldImagePath); // Delete the old image file
