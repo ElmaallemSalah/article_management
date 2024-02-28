@@ -9,6 +9,7 @@ import {
     Head,
     useForm,
 } from "@inertiajs/vue3";
+import { computed } from "vue";
 
 const props = defineProps({
     article: {
@@ -19,6 +20,10 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+});
+computed(() => {
+ 
+    console.log(props.categories);
 });
 
 const form = useForm({
@@ -31,6 +36,7 @@ const form = useForm({
 });
 
 const submit = () => {
+    console.log(route("article.update", props.article.id));
     form.post(route("article.update", props.article.id));
 };
 </script>

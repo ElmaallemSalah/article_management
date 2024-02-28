@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Article;
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 
@@ -15,34 +21,21 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-
-
         $perPage = $request->input('perPage') === 'ALL' ? PHP_INT_MAX : ($request->input('perPage') ?? 20);
-
-
-
-
-
-        $articles = Article::query()
-            ->select('articles.id', 'articles.name', 'articles.description', 'articles.image', 'articles.created_at', 'categories.name as category_name', 'users.name as user_name')
-            ->leftJoin('categories', 'articles.category_id', '=', 'categories.id')
-            ->leftJoin('users', 'articles.user_id', '=', 'users.id')
-            ->when($request->input('search'), function ($query, $search) {
-                $query->where('articles.name', 'like', '%' . $search . '%')
-                    ->orWhere('categories.name', 'like', '%' . $search . '%')
-                    ->orWhere('users.name', 'like', '%' . $search . '%')
-                    ->orWhere('articles.description', 'like', '%' . $search . '%');
-            })->orderBy('articles.id', 'desc')
-            ->paginate($perPage)
-            ->withQueryString();
-
-
         $search = $request->input('search');
-        $perPage = $request->input('perPage');
-
-        return inertia('Article/Index', compact('articles', 'search', 'perPage'));
+    
+        $articles = Article::with(['category', 'user'])
+                            ->withSearch($search)
+                            ->orderByDesc('id')
+                            ->paginate($perPage)
+                            ->withQueryString();
+    
+        return Inertia::render('Article/Index', [
+            'articles' => $articles,
+            'search' => $search,
+            'perPage' => $perPage,
+        ]);
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -59,29 +52,49 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreArticleRequest $request): RedirectResponse
     {
-        //validation
-        $request->validate([
-            'name' => 'required|unique:articles|max:255|min:3',
-            'description' => 'required',
-            'category' => 'required|exists:categories,id',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        $validatedData = $request->validated();
+    
+        // Handle image upload
+        $logoName = $this->uploadImageOnCreate($request);
+        Article::create([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'],
+            'category_id' => $validatedData['category'],
+            'user_id' => Auth::user()->id,
+            'image' => '/images/articles/' . $logoName,
+        ]);
+    
+        return redirect()->route('articles.index')->with('status', [
+            'type' => 'success',
+            'action' => 'Success',
+            'text' => 'Article created successfully!'
+        ]);
+    }
+    public function update(UpdateArticleRequest $request, Article $article): RedirectResponse
+    {
+        $request->merge(['article' => $article]);
+        $validatedData = $request->validated();
+
+        $logoName = $this->uploadImageOnUpdate($request, $article);
+
+        $article->update([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'],
+            'category_id' => $validatedData['category'],
+            'image' => '/images/articles/' . $logoName,
         ]);
 
-        if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images/articles'), $imageName);
-        }
-
-        $article = new Article();
-        $article->name = $request->name;
-        $article->description = $request->description;
-        $article->category_id = $request->category;
-        $article->user_id = auth()->user()->id;
-        $article->image = '/images/articles/' . $imageName;
-        $article->save();
-        return redirect()->route('articles.index')->with('status', ['type' => 'success', 'action' => 'Success', 'text' => 'Article created successfully!']);
+        return redirect()->route('articles.index')
+            ->with(
+                'status',
+                [
+                    'type' => 'success',
+                    'action' => 'Success',
+                    'text' => 'Article updated successfully!'
+                ]
+            );
     }
 
     /**
@@ -95,11 +108,11 @@ class ArticleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request)
+    public function edit(Article $article)
     {
 
 
-        $article = Article::findOrFail($request->id);
+        
 
         $categories = Category::select('id', 'name')->get();
 
@@ -113,61 +126,56 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-
-    public function update(Request $request)
-
+    private function uploadImageOnCreate(Request $request): string
     {
-        $article = Article::findOrFail($request->id);
-        $request->validate([
-            'name' => 'required|string|max:255|unique:articles,name,' . $article->id,
-            'description' => 'required',
-            'category' => 'required|exists:categories,id',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-
-        // if there is logo image condition
+        $logoName = '/images/articles/no_article.png';
         if ($request->hasFile('image')) {
             $logoName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images/articles'), $logoName);
-            if ($article->image) {
-                $oldImagePath = public_path('images/articles/' . $article->image);
 
+          
 
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath); // Delete the old image file
-                }
-            }
-        } else {
+        
+        }
+        return $logoName;
+      
+    }
+    private function uploadImageOnUpdate(Request $request, Article $article): string
+    {
+        if ($request->hasFile('image')) {
+            $logoName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images/articles'), $logoName);
 
+            $this->deleteOldImage($article);
 
-
-            $logoName = $article->image;
+            return $logoName;
         }
 
-
-
-        $article->name = $request->name;
-        $article->description = $request->description;
-        $article->category_id = $request->category;
-        $article->image =  '/images/articles/'.$logoName;
-        $article->save();
-
-        return redirect()->route('articles.index')->with('status', ['type' => 'success', 'action' => 'Success', 'text' => 'Article updated successfully!']);
+        return $article->image;
     }
+    private function deleteOldImage(Article $article): void
+    {
+        if ($article->image) {
+            $oldImagePath = public_path('images/articles/' . $article->image);
 
+            if (File::exists($oldImagePath)) {
+                File::delete($oldImagePath); // Delete the old image file
+            }
+        }
+    }
+ 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $id)
+    public function destroy(Article $article): RedirectResponse
     {
-        $article = Article::find($id->id);
         $article->delete();
 
-
-        return redirect()->route('articles.index')->with('status', ['type' => 'success', 'action' => 'Success', 'text' => 'Article Delete Successfully!']);
-
-
-        //  with('message', 'Blog Delete Successfully');
+        return redirect()->route('articles.index')
+            ->with('status', [
+                'type' => 'success',
+                'action' => 'Success',
+                'text' => 'Article Deleted Successfully!'
+            ]);
     }
 }

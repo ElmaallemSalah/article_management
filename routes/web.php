@@ -50,13 +50,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/article/store', [ArticleController::class, 'store'])
         ->middleware('permission:create')
         ->name('article.store');
-    Route::get('/article/edit/{id}', [ArticleController::class, 'edit'])
+        Route::get('/article/edit/{article}', [ArticleController::class, 'edit'])
         ->middleware('permission:edit')
         ->name('article.edit');
-    Route::post('/article/update', [ArticleController::class, 'update'])
+    
+    Route::post('/article/update/{article}', [ArticleController::class, 'update'])
         ->middleware('permission:edit')
         ->name('article.update');
-    Route::delete('/article/destroy/{id}', [ArticleController::class, 'destroy'])
+    Route::delete('/article/destroy/{article}', [ArticleController::class, 'destroy'])
         ->middleware('permission:delete')
         ->name('article.destroy');
 
